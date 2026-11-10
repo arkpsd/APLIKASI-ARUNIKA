@@ -849,7 +849,9 @@ function getSheetData(sheet, sheetName) {
                 document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
                 const swCode = `self.addEventListener('fetch', function(e) {});`;
                 const swBlob = new Blob([swCode], {type: 'application/javascript'});
-                if ('serviceWorker' in navigator) navigator.serviceWorker.register(URL.createObjectURL(swBlob));
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(e => console.warn('Service Worker registration skipped due to blob URL restrictions in this environment.'));
+                }
             } catch(e) {}
         };
 
