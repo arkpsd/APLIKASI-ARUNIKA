@@ -841,18 +841,26 @@ function getSheetData(sheet, sheetName) {
             window.showToast("Berhasil Logout");
         };
 
-        // Inject PWA Manifest & Service Worker dinamis agar bisa di-install ke HP
+        // Inject PWA Manifest dinamis agar bisa di-install ke HP dan PC
         const setupPWA = () => {
             try {
-                const manifest = { name: "Arunika Print", short_name: "Arunika", start_url: ".", display: "standalone", background_color: "#f8fafc", theme_color: "#f97316", icons: [{ src: "Glossy%20Orange%20and%20Blue%20Geometric%20Logo.png", sizes: "192x192", type: "image/png" }] };
+                const manifest = { 
+                    name: "Arunika Print Management", 
+                    short_name: "Arunika", 
+                    start_url: location.pathname, 
+                    display: "standalone", 
+                    background_color: "#fcfcfd", 
+                    theme_color: "#f97316", 
+                    icons: [{ src: "https://cdn-icons-png.flaticon.com/512/3063/3063822.png", sizes: "512x512", type: "image/png" }] 
+                };
                 const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
                 document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
-                const swCode = `self.addEventListener('fetch', function(e) {});`;
-                const swBlob = new Blob([swCode], {type: 'application/javascript'});
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(e => console.warn('Service Worker registration skipped due to blob URL restrictions in this environment.'));
-                }
-            } catch(e) {}
+                
+                // Catatan: Registrasi Service Worker via Blob dihapus karena dibatasi keamanan browser.
+                // Manifest JSON saja sudah cukup untuk memunculkan tombol Install di Chrome/Edge Desktop.
+            } catch(e) {
+                console.warn("PWA setup error:", e);
+            }
         };
 
         // --- JAM & TANGGAL REALTIME ---
